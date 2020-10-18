@@ -10,40 +10,6 @@ from shapely.geometry import Point, Polygon
 import pickle
 from scipy.spatial.distance import pdist, cdist
 
-def hide_toggle(for_next=False):
-    this_cell = """$('div.cell.code_cell.rendered.selected')"""
-    next_cell = this_cell + '.next()'
-
-    toggle_text = 'Toggle show/hide'  # text shown on toggle link
-    target_cell = this_cell  # target cell to control with toggle
-    js_hide_current = ''  # bit of JS to permanently hide code in current cell (only when toggling next cell)
-
-    if for_next:
-        target_cell = next_cell
-        toggle_text += ' next cell'
-        js_hide_current = this_cell + '.find("div.input").hide();'
-
-    js_f_name = 'code_toggle_{}'.format(str(random.randint(1,2**64)))
-
-    html = """
-        <script>
-            function {f_name}() {{
-                {cell_selector}.find('div.input').toggle();
-            }}
-
-            {js_hide_current}
-        </script>
-
-        <a href="javascript:{f_name}()">{toggle_text}</a>
-    """.format(
-        f_name=js_f_name,
-        cell_selector=target_cell,
-        js_hide_current=js_hide_current, 
-        toggle_text=toggle_text
-    )
-
-    return HTML(html)
-#hide_toggle()
 
 
 def read_dump(filer, min_step=0, max_step=1e10):
