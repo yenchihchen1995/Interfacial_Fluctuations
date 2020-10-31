@@ -7,6 +7,11 @@ from scipy.stats import binned_statistic
 from scipy import interpolate
 from shapely.geometry import Point, Polygon
 from scipy.spatial.distance import pdist, cdist
+import re
+
+def pause():
+    wait = input("PRESS ENTER TO CONTINUE")
+    return wait
 
 def get_frames_from_xyz(filename, ncols = 3, skipcol = 0):
     '''
@@ -161,7 +166,7 @@ def define_circle(p1, p2, p3):
     radius = np.sqrt((cx - p1[0])**2 + (cy - p1[1])**2)
     return ((cx, cy), radius)
 
-def get_smoother_interfaces(interfaces, curvature_cutoff):
+def get_smoother_interfaces(interface, curvature_cutoff):
     '''
     To get the interface with lower averaged curvature.
     Args:
@@ -170,15 +175,14 @@ def get_smoother_interfaces(interfaces, curvature_cutoff):
     Return:
         smoother interface (np.array)
     '''
-    sorted_interface = []
-    for interface in interfaces:
-        curvature = []
-        for i in range(1, len(interface)-1):
-            p1 = interface[i-1]
-            p2 = interface[i]
-            p3 = interface[i+1]
-            centre, radius = define_circle(p1, p2, p3)
-            curvature.append(1/radius)
-        if np.mean(curvature)<= curvature_cutoff:
-            sorted_interface.append(interface)
-    return np.array(sorted_interface)
+    curvature = []
+    for i in range(1, len(interface)-1):
+        p1 = interface[i-1]
+        p2 = interface[i]
+        p3 = interface[i+1]
+        centre, radius = define_circle(p1, p2, p3)
+        curvature.append(1/radius)
+    if np.mean(curvature) <= curvature_cutoff:
+        return interface
+    else:
+        return np.array([0, 0])
