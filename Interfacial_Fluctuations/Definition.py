@@ -39,14 +39,14 @@ def get_box_size(data):
     data = the data obtained from xyz file (should be numpy array).
     '''
     single_frame = np.array(data[0])
-    pos = single_frame[:, 1:3]
+    pos = single_frame[:, :2]
     box_size = [np.ceil(np.max(pos[:,0])), np.ceil(np.max(pos[:,1]))]
     return box_size
 
 def pick_clusters(frame, box_size, cutoff_cluster_size):
     '''
-    this is the function of how to get the clusters without being cut by the edges and upper
-    specific number of particles
+    this is the function of how to get the clusters without 
+    being cut by the edges and upper specific number of particles
     Args:
         frames : the single from xyz file
         box_size : the size of boundary 
@@ -55,19 +55,19 @@ def pick_clusters(frame, box_size, cutoff_cluster_size):
         The data which are sorted by the conditions (np.array)
     '''
     delta = 5
-    max_group = max(frame[:,5])
+    max_group = max(frame[:,3])
     data_group = []      
     for i in range (1,int(max_group)):
         group = []
         for j in range (len(frame)):
-            if int(frame[j][5]) == i:
+            if int(frame[j][3]) == i:
                 group.append(frame[j])
         group = np.array(group)
         edges = [[0, 0], [box_size[0], box_size[1]]]
         near_edge = False
         for edge_xy in edges:
              for dim, edge in enumerate(edge_xy):
-                near_edge = near_edge or (np.abs(group[:, dim+1] - edge).min() < delta)
+                near_edge = near_edge or (np.abs(group[:, dim] - edge).min() < delta)
         if len(group) >= cutoff_cluster_size and (not near_edge):
             data_group.append(np.array(group))
     return np.array(data_group)
