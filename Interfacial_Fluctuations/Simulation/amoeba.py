@@ -9,7 +9,7 @@ import pickle
 %autoreload 2
 
 # %%
-data = read_dump_ovito("/Volumes/E/OneDrive - University of Bristol/LouisEP/Data_collection/epsilon_0.25/5000/amoeba_0") #id x y AtomicVolume Cluster
+data = read_dump_ovito("Path") #id x y AtomicVolume Cluster
 
 # %%
 box_size = data[0]; frames = data[1]

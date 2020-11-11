@@ -15,7 +15,7 @@ if load_pickle:
     with open('slab_%i.pickle'%(Pe), 'rb') as file:
         data = pickle.load(file)
 else:
-    data = read_dump("/Volumes/E/OneDrive - University of Bristol/LouisEP/Data_collection/epsilon_0.25/5040/5040_%i.lammpstrj" %(Pe)) #id x y AtomicVolume Cluster
+    data = read_dump("path" %(Pe)) #id x y AtomicVolume Cluster
     with open('slab_%i.pickle'%(Pe), 'wb') as file:
         pickle.dump(data, file)
 #%% Data Info

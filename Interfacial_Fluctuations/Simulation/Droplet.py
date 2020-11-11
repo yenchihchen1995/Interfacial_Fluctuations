@@ -8,7 +8,7 @@ import freud
 %load_ext autoreload
 %autoreload 2
 #%%
-data = read_dump('/Volumes/E/OneDrive - University of Bristol/LouisEP/Simulation/200_drop.lammpstrj')
+data = read_dump('Path')
 
 # %%
 box_size, frames = data[0], data[1]

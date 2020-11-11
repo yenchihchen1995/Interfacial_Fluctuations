@@ -84,8 +84,8 @@ import pickle
 pe = [0,1,2,3,4,5]
 
 for i in range (len(pe)):
-        data = read_dump("/Users/mac/Downloads/1200_%s.lammpstrj"%(pe[i]))
-        with open ('/Users/mac/Downloads/pickle/1200_%s.pickle'%(pe[i]), 'wb') as file:
+        data = read_dump("path"%(pe[i]))
+        with open ('path'%(pe[i]), 'wb') as file:
             pickle.dump(data, file)
 # %%
 import numpy as np
@@ -105,9 +105,9 @@ def get_frames_from_xyz(filename, ncols=3, skipcol=0):
     f.close()
     return np.array(frames)
 # %%
-data = get_frames_from_xyz('/Users/mac/Downloads/experiment', 6, 0)
+data = get_frames_from_xyz('data_path', 6, 0)
 # %%
 import pickle
-with open('/Users/mac/Downloads/experiment.pickle','wb') as file:
+with open('file path','wb') as file:
     pickle.dump(data,file)
 # %%
