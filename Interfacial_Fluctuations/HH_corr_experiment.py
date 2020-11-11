@@ -9,8 +9,8 @@ from scipy.stats import binned_statistic
 from scipy import interpolate
 from shapely.geometry import Point, Polygon
 import pickle
-%load_ext autoreload
-%autoreload 2
+# %load_ext autoreload
+# %autoreload 2
 
 #%% Collect data and determine the box size--------------
 '''

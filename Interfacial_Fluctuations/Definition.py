@@ -186,3 +186,25 @@ def get_smoother_interfaces(interface, curvature_cutoff):
         return interface
     else:
         return np.array([0, 0])
+
+def pick_smoother_area(group, curvature_cutoff):
+    '''
+    To get the smoother area individually from each cluster
+    '''
+    curvature = []
+    for i in range (1, len(group)-1):
+        p1 = group[i-1]
+        p2 = group[i]
+        p3 = group[i+1]
+        centre, radius = define_circle(p1, p2, p3)
+        curvature.append(1/radius)
+    g = []
+    result = []
+    for c in range(len(curvature)):
+        if curvature[c] <= curvature_cutoff:
+            g.append(np.array(group[c]))
+        else:
+            result.append(np.array(g))
+            g = []
+    return np.array(result)
+    
