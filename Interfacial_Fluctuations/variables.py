@@ -2,14 +2,18 @@
 import numpy as np
 
 
-data_file = 'file_location'
+data_file =  'path'
 
-initial_frame = 650
+initial_frame = 400
 
 everyframe = 100
+
+minmum_particle_number_of_cluster = 150
+
+voronoi_cutoff = 43
 
 average_interface_number = 10
 
 bins = np.linspace(0,40,20)
 
-curvature_cutoff = 0.075
+curvature_cutoff = 0.07
