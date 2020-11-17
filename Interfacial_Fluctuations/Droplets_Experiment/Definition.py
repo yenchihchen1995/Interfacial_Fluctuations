@@ -55,10 +55,14 @@ def pick_clusters(frame, box_size, cutoff_cluster_size):
         The data which are sorted by the conditions (np.array)
     '''
     delta = 5
+    max_group = max(frame[:,3])
     data_group = []      
-    labels = set(frame[:, 3])
-    for value in labels:
-        group = frame[np.where(frame[:, 3] == value)]
+    for i in range (1,int(max_group)):
+        group = []
+        for j in range (len(frame)):
+            if int(frame[j][3]) == i:
+                group.append(frame[j])
+        group = np.array(group)
         edges = [[0, 0], [box_size[0], box_size[1]]]
         near_edge = False
         for edge_xy in edges:
@@ -203,92 +207,4 @@ def pick_smoother_area(group, curvature_cutoff):
             result.append(np.array(g))
             g = []
     return np.array(result)
-
-def get_mean_interpolated_interface(group, average_number):
-    '''
-    Get the mean interface by averging the actual interfacial particle posisions
     
-    Args:
-        group = np.array(n, 2)
-        average_number = the number used to average the position --> actual averaging number = size(group) / average_number
-        
-    '''
-    
-    average_number_of_interface = int(len(group) / average_number)
-    half_ani = int(average_number_of_interface / 2)
-    group_cp = group.copy()
-    group_cp = np.vstack((group_cp, group[:half_ani]))
-    mean_pos = []
-    for i in range (half_ani, len(group) + half_ani):
-        mean_pos.append(np.average((group_cp[i-half_ani:i+half_ani, :2]), axis = 0))
-    mean_pos = np.array(mean_pos)
-    mean_pos = np.vstack((mean_pos, mean_pos[0,:]))
-    x = mean_pos[:,0] ; y = mean_pos[:,1]
-    tck, u = interpolate.splprep([x, y], s=0)
-    xnew = np.linspace(0, 1, 1000, endpoint = True)
-    out = interpolate.splev(xnew, tck)
-    
-    return np.array(out).T
-
-def find_projection(point, profile):
-    """
-    Find the index of the projection of a point
-        onto a discrete profile
-
-    Args:
-        point: shape (2, )
-        profile: shape (n, 2)
-
-    Return:
-        the index of the projected point
-    """
-    distances = cdist(point[np.newaxis, :], profile)
-    projection_idx = np.argmin(distances)
-    return projection_idx
-
-def get_projection_distance(p1, p2, profile):
-    """
-    Get the curvilinear distance between two points
-        projected onto a discrete profile
-
-    Args:
-        p1: shape (2,)
-        p2: shape (2,)
-        profile: shape (n, 2), it should be ordered
-
-    Return:
-        the curvilinear distance
-    """
-    total_length = np.linalg.norm(profile[1:] - profile[:-1], axis=1).sum()
-    p1_proj_idx = find_projection(p1, profile)
-    p2_proj_idx = find_projection(p2, profile)
-    start = min(p1_proj_idx, p2_proj_idx)
-    end = max(p1_proj_idx, p2_proj_idx)
-    if start == end:
-        return 0
-    # print(start, end)
-    shifts = profile[start + 1 : end] - profile[start : end - 1]
-    distance = np.linalg.norm(shifts, axis=1).sum()
-    if distance < total_length / 2:
-        return distance
-    else:
-        return total_length - distance
-
-def hh_corr_cluster(interface, profile, height, bins):
-    """
-    Height-Height Correlation calculation
-    Args:
-        interface: (n, 2)
-        profile: (n, 2)
-    """
-    curvilinear_distances = []
-    hh_products = []
-    for i, p1 in enumerate(interface[:-1]):
-        for j, p2 in enumerate(interface[i + 1:]):
-            j += i
-            cd = get_projection_distance(p1, p2, profile)
-            curvilinear_distances.append(cd)
-            hh_products.append(height[i] * height[j])
-    return binned_statistic(
-        curvilinear_distances, hh_products, bins=bins, statistic='mean'
-        )[0]

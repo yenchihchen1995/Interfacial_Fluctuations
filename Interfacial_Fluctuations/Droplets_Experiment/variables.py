@@ -2,7 +2,7 @@
 import numpy as np
 
 
-data_file =  '/data/Exp_voronoi.pickle'
+data_file =  'path'
 
 initial_frame = 400
 
